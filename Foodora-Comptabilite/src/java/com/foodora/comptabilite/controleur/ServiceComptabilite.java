@@ -5,12 +5,16 @@
  */
 package com.foodora.comptabilite.controleur;
 
+import com.foodora.comptabilite.modele.Transaction;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+//import com.google.gson.*;
+import com.google.gson.Gson;
 
 /**
  *
@@ -46,10 +50,13 @@ public class ServiceComptabilite extends HttpServlet {
             String action = request.getParameter("action");
             String id = request.getParameter("id");
             
+            Transaction t = new Transaction();
+            Gson json = new Gson();
+//            JSONObject jo = new JSONObject(t);
             
             switch (action) {
                 case "afficher":
-                        //appel du dao 
+                        //appel du dao
                     out.println("afficher transaction");
                     break;
                 case "ajouter":
