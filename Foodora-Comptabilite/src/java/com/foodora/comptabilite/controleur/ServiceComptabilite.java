@@ -51,13 +51,21 @@ public class ServiceComptabilite extends HttpServlet {
             String id = request.getParameter("id");
             
             Transaction t = new Transaction();
-            Gson json = new Gson();
+            Gson gson = new Gson();
 //            JSONObject jo = new JSONObject(t);
-            
+
+            // 1. Java object to JSON, and save into a file
+            gson.toJson(t, out);
+            // 2. Java object to JSON, and assign to a String
+            //String jsonInString = gson.toJson(t);            
+
             switch (action) {
                 case "afficher":
                         //appel du dao
                     out.println("afficher transaction");
+                    
+                    
+                    
                     break;
                 case "ajouter":
                         //appel du dao 
