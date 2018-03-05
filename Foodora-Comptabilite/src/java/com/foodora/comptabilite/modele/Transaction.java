@@ -10,7 +10,7 @@ package com.foodora.comptabilite.modele;
  * @author Joel
  */
 public class Transaction {
-    private int idTransation;
+    private int id;
     private int idSuccursale;
     private int idClient;
     private String date;
@@ -21,12 +21,12 @@ public class Transaction {
     public Transaction() {
     }
 
-    public int getIdTransation() {
-        return idTransation;
+    public int getId() {
+        return id;
     }
 
-    public void setIdTransation(int idTransation) {
-        this.idTransation = idTransation;
+    public void setId(int id) {
+        this.id = id;
     }
 
     public int getIdSuccursale() {
