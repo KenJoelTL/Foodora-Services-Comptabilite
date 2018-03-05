@@ -5,6 +5,7 @@
  */
 package com.foodora.comptabilite.modele;
 
+import com.util.Util;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -13,6 +14,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -88,7 +91,57 @@ public class TransactionDAO extends DAO<Transaction>{
 
     @Override
     public boolean update(Transaction x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String req = "UPDATE transaction SET ID_CLIENT = ?, ID_SUCCURSALE = ?,"
+                        + "DATE_TRANSACTION = ?, ITEMS_COMMANDE = ?, SOUS_TOTAL = ?,"
+                        + " POURBOIRE_COURSIER = ? WHERE ID_TRANSACTION = ?";
+
+        PreparedStatement paramStm = null;
+        try {
+            paramStm = cnx.prepareStatement(req);
+
+            if(x.getDate()   != null && !"".equals(x.getDate().trim()) 
+                && x.getSousTotal() > 0 && x.getIdClient() > 0
+                && x.getIdSuccursale() > 0 && x.getPourboireCoursier() >= 0
+                && x.getItems_commande() != null && !"".equals(x.getItems_commande().trim()))
+            {
+                paramStm.setInt(1,(x.getIdClient()));
+                paramStm.setInt(2, (x.getIdSuccursale()));
+
+                paramStm.setString(3, x.getDate());
+                
+                if(x.getItems_commande() == null || "".equals(x.getItems_commande().trim()))
+                    paramStm.setString(4, null);
+                else
+                    paramStm.setString(4, Util.toUTF8(x.getItems_commande()));
+
+                paramStm.setDouble(5, x.getSousTotal());
+                paramStm.setDouble(6, x.getPourboireCoursier());
+                paramStm.setInt(7, x.getId());
+
+                int nbLignesAffectees= paramStm.executeUpdate();
+
+                if (nbLignesAffectees>0) {
+                    paramStm.close();
+                    return true;
+                }
+            }                
+        return false;
+        }
+        catch (SQLException exp) {
+            System.out.println(exp.getMessage());
+        }
+        finally {
+                try {
+                    if (paramStm!=null)
+                        paramStm.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(TransactionDAO.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+                
+        }
+        return false;
+            
     }
 
     @Override

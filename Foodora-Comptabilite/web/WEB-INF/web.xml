@@ -6,7 +6,7 @@
     </context-param>
     <context-param>
         <param-name>urlDb</param-name>
-        <param-value>jdbc:mysql://localhost/servicecomptable</param-value>
+        <param-value>jdbc:mysql://localhost/servicecomptable?useUnicode=true&amp;characterEncoding=UTF-8</param-value>
     </context-param>
     <context-param>
         <param-name>userDB</param-name>

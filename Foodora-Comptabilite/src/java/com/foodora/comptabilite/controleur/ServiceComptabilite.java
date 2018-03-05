@@ -116,9 +116,18 @@ public class ServiceComptabilite extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        processRequest(request, response);
+//              this.updateTransaction(request, response);
     }
 
+    @Override
+    protected void doPut(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException{
+        this.updateTransaction(req, resp);
+    }
+
+    
+    
+    
     /**
      * Returns a short description of the servlet.
      *
@@ -146,6 +155,9 @@ public class ServiceComptabilite extends HttpServlet {
         } catch (ClassNotFoundException ex) {
             Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
         }
+        finally{
+            Connexion.close();
+        }    
     }
     
     
@@ -169,8 +181,53 @@ public class ServiceComptabilite extends HttpServlet {
         catch (IOException | ClassNotFoundException ex) {
             Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
         }
+        finally{
+            Connexion.close();
+        }
     }
     
+    
+    public void updateTransaction(HttpServletRequest request, HttpServletResponse response){
+        System.out.println(request.getParameter("id"));
+        System.out.println(request.getAttribute(request.getRequestURI()));
+        
+        try {
+            if (request.getParameter("id") != null && request.getParameter("transaction") !=null) { //id est un paramètre obligatoire | request PUT
+                String id = request.getParameter("id");
+                Class.forName(Config.DRIVER);
+                Connection cnx = Connexion.getInstance();
+                TransactionDAO tDao = new TransactionDAO();
+                tDao.setCnx(cnx);
+                Transaction t = new Transaction();
+                Gson gson = new Gson();
+                t = 
+                        gson.fromJson(request.getParameter("transaction"), t.getClass());
+               
+                t.setId(Integer.parseInt(id));
+               
+                gson.toJson(t, response.getWriter());
+                response.getWriter().println("t");
+                /*if(request.getA)
+                
+                
+                
+                if(tDao.update(t));
+                //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
+*/
+            } else {
+                //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
+                response.sendError(0, "Aucune données trouvé");
+            }
+        
+        } catch (SQLException e) {
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            Connexion.close();
+        }
+System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUPDDAAAAATE");
+    }
     
     
     
