@@ -124,6 +124,12 @@ public class ServiceComptabilite extends HttpServlet {
             throws ServletException, IOException{
         this.updateTransaction(req, resp);
     }
+    
+    @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException{
+        this.deleteTransaction(req, resp);
+    }
 
     
     
@@ -217,6 +223,7 @@ public class ServiceComptabilite extends HttpServlet {
             } else {
                 //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
                 response.sendError(0, "Aucune données trouvé");
+                
             }
         
         } catch (SQLException e) {
@@ -227,6 +234,40 @@ public class ServiceComptabilite extends HttpServlet {
             Connexion.close();
         }
 System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUPDDAAAAATE");
+    }
+
+    private void deleteTransaction(HttpServletRequest request, HttpServletResponse response) {
+         try {
+            if (request.getParameter("id") != null ) {
+                String id = request.getParameter("id");
+                Class.forName(Config.DRIVER);
+                Connection cnx = Connexion.getInstance();
+                TransactionDAO tDao = new TransactionDAO();
+                tDao.setCnx(cnx);
+                Transaction t = new Transaction();
+                t = tDao.retrieve(id);
+                
+                if(tDao.delete(t))
+                    response.getWriter().print("{'message':'transaction supprimee', 'id':" + t.getId() +"}");
+                else 
+                     response.getWriter().print("{}");
+                
+            } 
+            else 
+                    response.getWriter().print("{}");
+            
+        
+        } catch (SQLException e) {
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            Connexion.close();
+        }
+        
+        
+        
+        
     }
     
     
