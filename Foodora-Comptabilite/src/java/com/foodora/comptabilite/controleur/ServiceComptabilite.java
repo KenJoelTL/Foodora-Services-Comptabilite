@@ -116,7 +116,7 @@ public class ServiceComptabilite extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-//              this.updateTransaction(request, response);
+              this.updateTransaction(request, response);
     }
 
     @Override
