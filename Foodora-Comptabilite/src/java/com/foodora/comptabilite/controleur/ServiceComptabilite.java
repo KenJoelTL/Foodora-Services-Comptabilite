@@ -32,7 +32,7 @@ import jdbc.Connexion;
 public class ServiceComptabilite extends HttpServlet {
 
     /**
-     * Processes requests for both HTTP <code>GET</code> and <code>POST</code>
+     * Processes requests for both HTTP <code>GET</code> and <code>POST</code> and <code>PUT</code> and <code>DELETE</code> 
      * methods.
      *
      * @param request servlet request
@@ -61,10 +61,6 @@ public class ServiceComptabilite extends HttpServlet {
                 case "ajouter":
                         //appel du dao 
                     out.println("ajouter transaction");
-                    break;
-                case "modifier":
-                        //appel du dao 
-                    out.println("modifier transaction");
                     break;
                 case "Supprimer":
                         //appel du dao 
@@ -118,11 +114,19 @@ public class ServiceComptabilite extends HttpServlet {
             throws ServletException, IOException {
               this.updateTransaction(request, response);
     }
-
+    
+    /**
+     * Handles the HTTP <code>PUT</code> method.
+     *
+     * @param request servlet request
+     * @param response servlet response
+     * @throws ServletException if a servlet-specific error occurs
+     * @throws IOException if an I/O error occurs
+     */
     @Override
-    protected void doPut(HttpServletRequest req, HttpServletResponse resp) 
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException{
-        this.updateTransaction(req, resp);
+        this.updateTransaction(request, response);
     }
 
     
@@ -188,9 +192,6 @@ public class ServiceComptabilite extends HttpServlet {
     
     
     public void updateTransaction(HttpServletRequest request, HttpServletResponse response){
-        System.out.println(request.getParameter("id"));
-        System.out.println(request.getAttribute(request.getRequestURI()));
-        
         try {
             if (request.getParameter("id") != null && request.getParameter("transaction") !=null) { //id est un paramètre obligatoire | request PUT
                 String id = request.getParameter("id");
@@ -200,20 +201,16 @@ public class ServiceComptabilite extends HttpServlet {
                 tDao.setCnx(cnx);
                 Transaction t = new Transaction();
                 Gson gson = new Gson();
-                t = 
-                        gson.fromJson(request.getParameter("transaction"), t.getClass());
+                t = gson.fromJson(request.getParameter("transaction"), t.getClass());
                
                 t.setId(Integer.parseInt(id));
                
-                gson.toJson(t, response.getWriter());
-                response.getWriter().println("t");
-                /*if(request.getA)
-                
-                
-                
-                if(tDao.update(t));
+                if(tDao.update(t)){
+                    System.out.println("SUCCES !");
+                    t = tDao.retrieve(id);
+                    gson.toJson(t, response.getWriter());
+                }
                 //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
-*/
             } else {
                 //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
                 response.sendError(0, "Aucune données trouvé");
@@ -226,7 +223,6 @@ public class ServiceComptabilite extends HttpServlet {
         finally{
             Connexion.close();
         }
-System.out.println("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUPDDAAAAATE");
     }
     
     
