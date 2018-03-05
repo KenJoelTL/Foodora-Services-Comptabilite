@@ -146,7 +146,35 @@ public class TransactionDAO extends DAO<Transaction>{
 
     @Override
     public boolean delete(Transaction x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String req = "DELETE FROM transaction WHERE `ID_TRANSACTION` = ?";
+        PreparedStatement paramStm = null;
+        try {
+            paramStm = cnx.prepareStatement(req);
+                paramStm.setInt(1, x.getId());
+                int nbLignesAffectees= paramStm.executeUpdate();
+                if (nbLignesAffectees>0) {
+                    paramStm.close();
+                    System.out.println("test6");
+                    return true;
+                    
+                }
+            return false;
+        }
+        catch (SQLException exp) {
+        }
+        catch (Exception exp) {
+        }
+        finally {
+                try {
+                    if (paramStm!=null)
+                        paramStm.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(TransactionDAO.class.getName())
+                            .log(Level.SEVERE, null, ex);
+                }
+                
+        }
+        return false;
     }
 
     @Override
