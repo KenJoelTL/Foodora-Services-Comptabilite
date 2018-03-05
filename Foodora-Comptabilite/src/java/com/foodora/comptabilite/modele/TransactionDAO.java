@@ -146,18 +146,12 @@ public class TransactionDAO extends DAO<Transaction>{
 
     @Override
     public boolean delete(Transaction x) {
-        System.out.println("DAOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO");
         String req = "DELETE FROM transaction WHERE `ID_TRANSACTION` = ?";
-        System.out.println("test1");
         PreparedStatement paramStm = null;
-System.out.println("test2");
         try {
             paramStm = cnx.prepareStatement(req);
-System.out.println("test3");
                 paramStm.setInt(1, x.getId());
-System.out.println("test4");
                 int nbLignesAffectees= paramStm.executeUpdate();
-System.out.println("test5");
                 if (nbLignesAffectees>0) {
                     paramStm.close();
                     System.out.println("test6");
