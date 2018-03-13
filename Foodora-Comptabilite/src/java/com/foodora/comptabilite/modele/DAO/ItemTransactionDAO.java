@@ -114,7 +114,7 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
 
     @Override
     public boolean update(ItemTransaction x) {
-         String req = "UPDATE ITEM_TRANSACTION SET CODE = ?, ID_SUCCURSALE = ?,"
+    /*     String req = "UPDATE ITEM_TRANSACTION SET CODE = ?, ID_SUCCURSALE = ?,"
                 + "DATE_TRANSACTION = ?, ITEMS_COMMANDE = ?, SOUS_TOTAL = ?,"
                 + " POURBOIRE_COURSIER = ? WHERE ID_TRANSACTION = ?";
 
@@ -161,7 +161,7 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
                         .log(Level.SEVERE, null, ex);
             }
 
-        }
+        }*/
         return false;
     }
 
