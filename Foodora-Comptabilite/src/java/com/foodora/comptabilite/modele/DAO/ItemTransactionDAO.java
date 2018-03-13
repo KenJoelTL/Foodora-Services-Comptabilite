@@ -36,7 +36,7 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
             System.out.println("test8");
             paramStm.setString(1, x.getCode());
             paramStm.setInt(2, x.getIdTransaction());
-            paramStm.setDouble(3, x.getQuantite());
+            paramStm.setInt(3, x.getQuantite());
             int n = paramStm.executeUpdate();
             System.out.println("test9");
             if (n > 0) {
@@ -127,7 +127,6 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
             {
                 paramStm.setString(1, (x.getCode()));
                 paramStm.setInt(2, (x.getIdTransaction()));
-
                 paramStm.setInt(3, x.getQuantite());
 
 
@@ -151,7 +150,7 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
                         .log(Level.SEVERE, null, ex);
             }
 
-        }*/
+        }
         return false;
     }
 
