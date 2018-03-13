@@ -13,6 +13,7 @@ public class ItemTransaction {
     private int id;
     private String code;
     private int idTransaction;
+    private int quantite;
 
     public int getId() {
         return id;
@@ -29,7 +30,7 @@ public class ItemTransaction {
     public void setCode(String code) {
         this.code = code;
     }
-
+    
     public int getIdTransaction() {
         return idTransaction;
     }
@@ -38,6 +39,12 @@ public class ItemTransaction {
         this.idTransaction = idTransaction;
     }
     
-    
+    public int getQuantite() {
+        return quantite;
+    }
+
+    public void setQuantite(int quantite) {
+        this.quantite = quantite;
+    }
     
 }
