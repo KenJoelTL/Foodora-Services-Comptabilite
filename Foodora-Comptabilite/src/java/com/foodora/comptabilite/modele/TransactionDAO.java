@@ -25,7 +25,48 @@ public class TransactionDAO extends DAO<Transaction>{
 
     @Override
     public boolean create(Transaction x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        System.out.println("creaaaaateeeeeeeeeeeeeeeeee");
+        
+         String req = "INSERT INTO transaction (`ID_SUCCURSALE` , `ID_CLIENT` , `DATE_TRANSACTION`, `ITEMS_COMMANDE`, `SOUS_TOTAL`, `POURBOIRE_COURSIER`) VALUES "+
+			     "(?,?,?,?,?,?)";
+
+        PreparedStatement paramStm = null;
+        try 
+        {
+
+                paramStm = cnx.prepareStatement(req);
+
+                
+                paramStm.setInt(1, x.getIdSuccursale());
+                paramStm.setInt(2, x.getIdClient());
+                paramStm.setString(3, x.getDate());
+                paramStm.setString(4, x.getItems_commande());
+                paramStm.setDouble(5, x.getSousTotal());
+                paramStm.setDouble(6, x.getPourboireCoursier());
+                int n= paramStm.executeUpdate();
+                
+                if (n>0)
+                {
+                        paramStm.close();
+                        //stm.close();
+                        return true;
+                }
+        }
+        catch (SQLException exp)
+        {
+        }
+        finally
+        {
+                try {
+                    if (paramStm!=null)
+                    paramStm.close();
+                } catch (SQLException ex) {
+                    Logger.getLogger(TransactionDAO.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                  
+        }
+        return false;
     }
 
     @Override

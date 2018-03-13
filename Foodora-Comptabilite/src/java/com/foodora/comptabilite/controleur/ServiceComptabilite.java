@@ -113,7 +113,8 @@ public class ServiceComptabilite extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-              this.updateTransaction(request, response);
+        System.out.println("DO POOOOOOST");
+              this.createTransaction(request, response);
     }
     
     /**
@@ -265,6 +266,37 @@ public class ServiceComptabilite extends HttpServlet {
         
         
         
+    }
+
+    private void createTransaction(HttpServletRequest request, HttpServletResponse response) {
+       try {
+            if (request.getParameter("transaction") !=null) { 
+                Class.forName(Config.DRIVER);
+                Connection cnx = Connexion.getInstance();
+                TransactionDAO tDao = new TransactionDAO();
+                tDao.setCnx(cnx);
+                Transaction t = new Transaction();
+                Gson gson = new Gson();
+                t = gson.fromJson(request.getParameter("transaction"), t.getClass());
+              
+               
+                if(tDao.create(t)){
+                    System.out.println("SUCCES !");
+                    gson.toJson(t, response.getWriter());
+                }
+                //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
+            } else {
+                //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
+                response.sendError(0, "Aucune donnée créée");
+            }
+        
+        } catch (SQLException e) {
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            Connexion.close();
+        }
     }
     
     
