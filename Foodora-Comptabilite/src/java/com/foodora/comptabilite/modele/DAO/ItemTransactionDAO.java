@@ -114,32 +114,22 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
 
     @Override
     public boolean update(ItemTransaction x) {
-    /*     String req = "UPDATE ITEM_TRANSACTION SET CODE = ?, ID_SUCCURSALE = ?,"
-                + "DATE_TRANSACTION = ?, ITEMS_COMMANDE = ?, SOUS_TOTAL = ?,"
-                + " POURBOIRE_COURSIER = ? WHERE ID_TRANSACTION = ?";
+
+         String req = "UPDATE ITEM_TRANSACTION SET CODE = ?, ID_TRANSACTION = ?,"
+                + "QUANTITE= ?";
 
         PreparedStatement paramStm = null;
         try {
             paramStm = cnx.prepareStatement(req);
 
-            if (x.getDate() != null && !"".equals(x.getDate().trim())
-                    && x.getSousTotal() > 0 && x.getIdClient() > 0
-                    && x.getIdSuccursale() > 0 && x.getPourboireCoursier() >= 0
-                    && x.getItemsCommande() != null && !"".equals(x.getItemsCommande().trim())) {
-                paramStm.setInt(1, (x.getIdClient()));
-                paramStm.setInt(2, (x.getIdSuccursale()));
+            if (x.getCode()!= null && !"".equals(x.getCode().trim())
+                    && x.getIdTransaction()> 0 && x.getQuantite()>= 0) 
+            {
+                paramStm.setString(1, (x.getCode()));
+                paramStm.setInt(2, (x.getIdTransaction()));
 
-                paramStm.setString(3, x.getDate());
+                paramStm.setInt(3, x.getQuantite());
 
-                if (x.getItemsCommande() == null || "".equals(x.getItemsCommande().trim())) {
-                    paramStm.setString(4, null);
-                } else {
-                    paramStm.setString(4, Util.toUTF8(x.getItemsCommande()));
-                }
-
-                paramStm.setDouble(5, x.getSousTotal());
-                paramStm.setDouble(6, x.getPourboireCoursier());
-                paramStm.setInt(7, x.getId());
 
                 int nbLignesAffectees = paramStm.executeUpdate();
 
