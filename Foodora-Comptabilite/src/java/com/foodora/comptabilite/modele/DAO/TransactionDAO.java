@@ -5,6 +5,7 @@
  */
 package com.foodora.comptabilite.modele.DAO;
 
+import com.foodora.comptabilite.modele.ItemTransaction;
 import com.foodora.comptabilite.modele.Transaction;
 import com.util.Util;
 import java.sql.PreparedStatement;
@@ -44,6 +45,15 @@ public class TransactionDAO extends DAO<Transaction> {
             paramStm.setDouble(4, x.getPourboireCoursier());
             int n = paramStm.executeUpdate();
             System.out.println("test9");
+            
+            //Créer les items de la transaction courrante
+            ItemTransactionDAO itDao = new ItemTransactionDAO();
+            itDao.setCnx(cnx);
+            for (ItemTransaction itemTransaction : x.getItemsCommande()) {
+                itDao.create(itemTransaction);
+            }
+            
+            
             if (n > 0) {
                 paramStm.close();
                 //stm.close();
@@ -84,10 +94,14 @@ public class TransactionDAO extends DAO<Transaction> {
                 t.setIdSuccursale(resultat.getInt("ID_SUCCURSALE"));
                 t.setIdClient(resultat.getInt("ID_CLIENT"));
                 t.setDate(resultat.getString("DATE_TRANSACTION"));
-                t.setItems_commande(resultat.getString("ITEMS_COMMANDE"));
                 t.setSousTotal(resultat.getDouble("SOUS_TOTAL"));
                 t.setPourboireCoursier(resultat.getDouble("POURBOIRE_COURSIER"));
-
+                
+                //Recherche les items de la transaction courrante
+                ItemTransactionDAO itDao = new ItemTransactionDAO();
+                itDao.setCnx(cnx);
+                t.setItemsCommande(itDao.findByIdTransaction(t.getId()));
+                
                 resultat.close();
                 paramStm.close();
                 return t;
@@ -123,7 +137,7 @@ public class TransactionDAO extends DAO<Transaction> {
     @Override
     public boolean update(Transaction x) {
         String req = "UPDATE transaction SET ID_CLIENT = ?, ID_SUCCURSALE = ?,"
-                + "DATE_TRANSACTION = ?, ITEMS_COMMANDE = ?, SOUS_TOTAL = ?,"
+                + "DATE_TRANSACTION = ?, SOUS_TOTAL = ?,"
                 + " POURBOIRE_COURSIER = ? WHERE ID_TRANSACTION = ?";
 
         PreparedStatement paramStm = null;
@@ -132,22 +146,13 @@ public class TransactionDAO extends DAO<Transaction> {
 
             if (x.getDate() != null && !"".equals(x.getDate().trim())
                     && x.getSousTotal() > 0 && x.getIdClient() > 0
-                    && x.getIdSuccursale() > 0 && x.getPourboireCoursier() >= 0
-                    && x.getItemsCommande() != null && !"".equals(x.getItemsCommande().trim())) {
+                    && x.getIdSuccursale() > 0 && x.getPourboireCoursier() >= 0) {
                 paramStm.setInt(1, (x.getIdClient()));
                 paramStm.setInt(2, (x.getIdSuccursale()));
-
                 paramStm.setString(3, x.getDate());
-
-                if (x.getItemsCommande() == null || "".equals(x.getItemsCommande().trim())) {
-                    paramStm.setString(4, null);
-                } else {
-                    paramStm.setString(4, Util.toUTF8(x.getItemsCommande()));
-                }
-
-                paramStm.setDouble(5, x.getSousTotal());
-                paramStm.setDouble(6, x.getPourboireCoursier());
-                paramStm.setInt(7, x.getId());
+                paramStm.setDouble(4, x.getSousTotal());
+                paramStm.setDouble(5, x.getPourboireCoursier());
+                paramStm.setInt(6, x.getId());
 
                 int nbLignesAffectees = paramStm.executeUpdate();
 
@@ -219,10 +224,14 @@ public class TransactionDAO extends DAO<Transaction> {
                 t.setIdSuccursale(r.getInt("ID_SUCCURSALE"));
                 t.setIdClient(r.getInt("ID_CLIENT"));
                 t.setDate(r.getString("DATE_TRANSACTION"));
-                t.setItems_commande(r.getString("ITEMS_COMMANDE"));
                 t.setSousTotal(r.getDouble("SOUS_TOTAL"));
                 t.setPourboireCoursier(r.getDouble("POURBOIRE_COURSIER"));
-
+                
+                //Recherche les items de la transaction courrante
+                ItemTransactionDAO itDao = new ItemTransactionDAO();
+                itDao.setCnx(cnx);
+                t.setItemsCommande(itDao.findByIdTransaction(t.getId()));
+                
                 listeTransaction.add(t);
             }
 
