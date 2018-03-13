@@ -7,7 +7,7 @@
 package com.foodora.comptabilite.controleur;
 
 import com.foodora.comptabilite.modele.Transaction;
-import com.foodora.comptabilite.modele.TransactionDAO;
+import com.foodora.comptabilite.modele.DAO.TransactionDAO;
 import java.io.IOException;
 import java.io.PrintWriter;
 import javax.servlet.ServletException;

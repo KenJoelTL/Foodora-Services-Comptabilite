@@ -5,6 +5,8 @@
  */
 package com.foodora.comptabilite.modele;
 
+import java.util.ArrayList;
+
 /**
  *
  * @author Joel
@@ -14,7 +16,7 @@ public class Transaction {
     private int idSuccursale;
     private int idClient;
     private String date;
-    private String items_commande;
+    private ArrayList<ItemTransaction> itemsCommande;
     private double sousTotal;
     private double pourboireCoursier;
 
@@ -53,12 +55,12 @@ public class Transaction {
         this.date = date;
     }
 
-    public String getItems_commande() {
-        return items_commande;
+    public ArrayList<ItemTransaction> getItemsCommande() {
+        return itemsCommande;
     }
 
-    public void setItems_commande(String items_commande) {
-        this.items_commande = items_commande;
+    public void setItemsCommande(ArrayList<ItemTransaction> itemsCommande) {
+        this.itemsCommande = itemsCommande;
     }
 
     public double getSousTotal() {
