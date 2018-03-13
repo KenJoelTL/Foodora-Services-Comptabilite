@@ -87,16 +87,20 @@ public class ServiceComptabilite extends HttpServlet {
             throws ServletException, IOException {
 
         String action = request.getParameter("action");
-        switch (action) {
-            case "get":
-                if (request.getParameter("id") != null) {
-                    this.getTransaction(request, response);
-                } else {
+        if (action == null) {
+            this.getAllTransaction(response);
+        } else {
+            switch (action) {
+                case "get":
+                    if (request.getParameter("id") != null) {
+                        this.getTransaction(request, response);
+                    } else {
+                        this.getAllTransaction(response);
+                    }
+                    break;
+                default:
                     this.getAllTransaction(response);
-                }
-                break;
-            default:
-                this.getAllTransaction(response);
+            }
         }
 
     }
