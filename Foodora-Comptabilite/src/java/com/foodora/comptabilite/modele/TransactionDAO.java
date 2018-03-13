@@ -28,24 +28,23 @@ public class TransactionDAO extends DAO<Transaction>{
         
         System.out.println("creaaaaateeeeeeeeeeeeeeeeee");
         
-         String req = "INSERT INTO transaction (`ID_SUCCURSALE` , `ID_CLIENT` , `DATE_TRANSACTION`, `ITEMS_COMMANDE`, `SOUS_TOTAL`, `POURBOIRE_COURSIER`) VALUES "+
-			     "(?,?,?,?,?,?)";
-
+         String req = "INSERT INTO transaction (`ID_SUCCURSALE` , `ID_CLIENT`, `ITEMS_COMMANDE`, `SOUS_TOTAL`, `POURBOIRE_COURSIER`) VALUES "+
+			     "(?,?,?,?,?)";
+         System.out.println("test6");
         PreparedStatement paramStm = null;
         try 
         {
-
+System.out.println("test7");
                 paramStm = cnx.prepareStatement(req);
 
-                
+                System.out.println("test8");
                 paramStm.setInt(1, x.getIdSuccursale());
                 paramStm.setInt(2, x.getIdClient());
-                paramStm.setString(3, x.getDate());
-                paramStm.setString(4, x.getItems_commande());
-                paramStm.setDouble(5, x.getSousTotal());
-                paramStm.setDouble(6, x.getPourboireCoursier());
+                paramStm.setString(3, x.getItems_commande());
+                paramStm.setDouble(4, x.getSousTotal());
+                paramStm.setDouble(5, x.getPourboireCoursier());
                 int n= paramStm.executeUpdate();
-                
+                System.out.println("test9");
                 if (n>0)
                 {
                         paramStm.close();
