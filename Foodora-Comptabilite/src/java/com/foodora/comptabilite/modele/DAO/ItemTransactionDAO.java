@@ -6,8 +6,14 @@
 package com.foodora.comptabilite.modele.DAO;
 
 import com.foodora.comptabilite.modele.ItemTransaction;
+import com.foodora.comptabilite.modele.Transaction;
+import com.util.Util;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,20 +26,17 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
 
     @Override
     public boolean create(ItemTransaction x) {
-        /*System.out.println("creaaaaateeeeeeeeeeeeeeeeee");
 
-        String req = "INSERT INTO transaction (`CODE` , `ID_TRANSACTION`, `QUANTITE`) VALUES (?,?,?)";
-        System.out.println("test6");
+        String req = "INSERT INTO ITEM_TRANSACTION(`CODE` , `ID_TRANSACTION`, `QUANTITE`) VALUES (?,?,?)";
         PreparedStatement paramStm = null;
         try {
             System.out.println("test7");
             paramStm = cnx.prepareStatement(req);
 
             System.out.println("test8");
-            paramStm.setInt(1, x);
-            paramStm.setInt(2, x.getIdClient());
-            paramStm.setDouble(3, x.getSousTotal());
-            paramStm.setDouble(4, x.getPourboireCoursier());
+            paramStm.setString(1, x.getCode());
+            paramStm.setInt(2, x.getIdTransaction());
+            paramStm.setDouble(3, x.getQuantite());
             int n = paramStm.executeUpdate();
             System.out.println("test9");
             if (n > 0) {
@@ -52,32 +55,216 @@ public class ItemTransactionDAO extends DAO<ItemTransaction> {
             }
 
         }
-        return false;*/
+        return false;
     }
 
     @Override
     public ItemTransaction retrieve(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String req = "SELECT * FROM ITEM_TRANSACTION WHERE `ID` = ?";
+
+        PreparedStatement paramStm = null;
+        try {
+
+            paramStm = cnx.prepareStatement(req);
+
+            paramStm.setInt(1, id);
+
+            ResultSet resultat = paramStm.executeQuery();
+
+            // On vérifie s'il y a un résultat    
+            if (resultat.next()) {
+
+                ItemTransaction i = new ItemTransaction();
+                i.setId(resultat.getInt("ID"));
+                i.setCode(resultat.getString("CODE"));
+                i.setIdTransaction(resultat.getInt("ID_TRANSACTION"));
+                i.setQuantite(resultat.getInt("QUANTITE"));
+
+                resultat.close();
+                paramStm.close();
+                return i;
+
+            }
+            resultat.close();
+            paramStm.close();
+            return null;
+
+        } catch (SQLException exp) {
+        } finally {
+            try {
+                if (paramStm != null) {
+                    paramStm.close();
+                }
+            } catch (SQLException exp) {
+            } catch (Exception e) {
+            }
+        }
+
+        return null;
     }
 
     @Override
     public ItemTransaction retrieve(String id) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        try {
+            return this.retrieve(Integer.parseInt(id));
+        } catch (NumberFormatException e) {
+            return null;
+        }
     }
 
     @Override
     public boolean update(ItemTransaction x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+         String req = "UPDATE ITEM_TRANSACTION SET CODE = ?, ID_SUCCURSALE = ?,"
+                + "DATE_TRANSACTION = ?, ITEMS_COMMANDE = ?, SOUS_TOTAL = ?,"
+                + " POURBOIRE_COURSIER = ? WHERE ID_TRANSACTION = ?";
+
+        PreparedStatement paramStm = null;
+        try {
+            paramStm = cnx.prepareStatement(req);
+
+            if (x.getDate() != null && !"".equals(x.getDate().trim())
+                    && x.getSousTotal() > 0 && x.getIdClient() > 0
+                    && x.getIdSuccursale() > 0 && x.getPourboireCoursier() >= 0
+                    && x.getItemsCommande() != null && !"".equals(x.getItemsCommande().trim())) {
+                paramStm.setInt(1, (x.getIdClient()));
+                paramStm.setInt(2, (x.getIdSuccursale()));
+
+                paramStm.setString(3, x.getDate());
+
+                if (x.getItemsCommande() == null || "".equals(x.getItemsCommande().trim())) {
+                    paramStm.setString(4, null);
+                } else {
+                    paramStm.setString(4, Util.toUTF8(x.getItemsCommande()));
+                }
+
+                paramStm.setDouble(5, x.getSousTotal());
+                paramStm.setDouble(6, x.getPourboireCoursier());
+                paramStm.setInt(7, x.getId());
+
+                int nbLignesAffectees = paramStm.executeUpdate();
+
+                if (nbLignesAffectees > 0) {
+                    paramStm.close();
+                    return true;
+                }
+            }
+            return false;
+        } catch (SQLException exp) {
+            System.out.println(exp.getMessage());
+        } finally {
+            try {
+                if (paramStm != null) {
+                    paramStm.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(TransactionDAO.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return false;
     }
 
     @Override
     public boolean delete(ItemTransaction x) {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        String req = "DELETE FROM ITEM_TRANSACTION WHERE `ID` = ?";
+        PreparedStatement paramStm = null;
+        try {
+            paramStm = cnx.prepareStatement(req);
+            paramStm.setInt(1, x.getId());
+            int nbLignesAffectees = paramStm.executeUpdate();
+            if (nbLignesAffectees > 0) {
+                paramStm.close();
+                System.out.println("test6");
+                return true;
+
+            }
+            return false;
+        } catch (SQLException exp) {
+        } catch (Exception exp) {
+        } finally {
+            try {
+                if (paramStm != null) {
+                    paramStm.close();
+                }
+            } catch (SQLException ex) {
+                Logger.getLogger(TransactionDAO.class.getName())
+                        .log(Level.SEVERE, null, ex);
+            }
+
+        }
+        return false;
     }
 
     @Override
     public List<ItemTransaction> findAll() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        List<ItemTransaction> listeItems = new LinkedList<>();
+        Statement stm;
+        try {
+            stm = cnx.createStatement();
+            ResultSet r = stm.executeQuery("SELECT * FROM ITEM_TRANSACTION");
+            while (r.next()) {
+                 ItemTransaction i = new ItemTransaction();
+                 i.setId(r.getInt("ID"));
+                 i.setCode(r.getString("CODE"));
+                 i.setIdTransaction(r.getInt("ID_TRANSACTION"));
+                 i.setQuantite(r.getInt("QUANTITE"));
+
+                listeItems.add(i);
+            }
+
+            r.close();
+            stm.close();
+        } catch (SQLException exp) {
+            System.out.println(exp);
+        }
+        return listeItems;
+    }
+    
+    public List<ItemTransaction> findByIdTransaction(int id) {
+       String req = "SELECT * FROM ITEM_TRANSACTION WHERE `ID_TRANSACTION` = ?";
+        List<ItemTransaction> listeItems = new ArrayList<ItemTransaction>();
+
+        PreparedStatement paramStm = null;
+        try {
+
+                paramStm = cnx.prepareStatement(req);
+
+                paramStm.setInt(1, id);
+
+                ResultSet resultat = paramStm.executeQuery();
+
+                // On vérifie s'il y a un résultat    
+                while(resultat.next()){
+
+                    ItemTransaction i = new ItemTransaction();
+                    i.setId(resultat.getInt("ID"));
+                    i.setCode(resultat.getString("CODE"));
+                    i.setIdTransaction(resultat.getInt("ID_TRANSACTION"));
+                    i.setQuantite(resultat.getInt("QUANTITE"));
+                   
+                    listeItems.add(i);
+
+                }
+                resultat.close();
+                paramStm.close();
+                return listeItems;
+
+        }
+        catch (SQLException exp) {
+        }
+        finally {
+            try{
+                if (paramStm!=null)
+                    paramStm.close();
+            }
+            catch (SQLException exp) {
+            }
+             catch (Exception e) {
+            }
+        }        
+
+        return listeItems;
     }
 
 }
