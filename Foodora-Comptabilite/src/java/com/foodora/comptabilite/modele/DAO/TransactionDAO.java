@@ -29,7 +29,7 @@ public class TransactionDAO extends DAO<Transaction> {
         System.out.println("creaaaaateeeeeeeeeeeeeeeeee");
 
         String req = "INSERT INTO transaction (`ID_SUCCURSALE` , `ID_CLIENT`, `SOUS_TOTAL`, `POURBOIRE_COURSIER`) VALUES "
-                + "(?,?,?,?,?)";
+                + "(?,?,?,?)";
         System.out.println("test6");
         PreparedStatement paramStm = null;
         try {
