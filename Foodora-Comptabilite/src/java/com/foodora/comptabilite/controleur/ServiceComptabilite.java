@@ -1,3 +1,4 @@
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -112,7 +113,7 @@ public class ServiceComptabilite extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-              this.updateTransaction(request, response);
+              this.createTransaction(request, response);
     }
     
     /**
@@ -128,6 +129,13 @@ public class ServiceComptabilite extends HttpServlet {
             throws ServletException, IOException{
         this.updateTransaction(request, response);
     }
+  
+      @Override
+    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) 
+            throws ServletException, IOException{
+        this.deleteTransaction(req, resp);
+    }
+
 
     
     
@@ -224,8 +232,80 @@ public class ServiceComptabilite extends HttpServlet {
             Connexion.close();
         }
     }
+  
+  private void deleteTransaction(HttpServletRequest request, HttpServletResponse response) {
+         try {
+            if (request.getParameter("id") != null ) {
+                String id = request.getParameter("id");
+                Class.forName(Config.DRIVER);
+                Connection cnx = Connexion.getInstance();
+                TransactionDAO tDao = new TransactionDAO();
+                tDao.setCnx(cnx);
+                Transaction t = new Transaction();
+                t = tDao.retrieve(id);
+                
+                if(tDao.delete(t))
+                    response.getWriter().print("{'message':'transaction supprimee', 'id':" + t.getId() +"}");
+                else 
+                     response.getWriter().print("{}");
+                
+            } 
+            else 
+                    response.getWriter().print("{}");
+            
+        
+        } catch (SQLException e) {
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            Connexion.close();
+        }
+        
+        
+        
+        
+    }
+
+    private void createTransaction(HttpServletRequest request, HttpServletResponse response) {
+       try {
+           System.out.println("CREATE TRANSACTION");
+            if (request.getParameter("transaction") !=null) { 
+                Class.forName(Config.DRIVER);
+                Connection cnx = Connexion.getInstance();
+                TransactionDAO tDao = new TransactionDAO();
+                System.out.println("test3");                tDao.setCnx(cnx);
+                Transaction t = new Transaction();
+                Gson gson = new Gson();
+                t = gson.fromJson(request.getParameter("transaction"), t.getClass());
+              /* t.setIdClient(1);
+               t.setIdSuccursale(1);
+               t.setItems_commande("itemscommande");
+               t.setPourboireCoursier(3);
+               t.setSousTotal(23);*/
+
+                if(tDao.create(t)){
+         
+                    System.out.println("SUCCES !");
+                    gson.toJson(t, response.getWriter());
+                }
+                //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
+            } else {
+                //message d'erreur en JSON { "Error" : Aucune données trouvé, "Resultat" : {} }
+                response.sendError(0, "Aucune donnée créée");
+            }
+        
+        } catch (SQLException e) {
+        } catch (IOException | ClassNotFoundException ex) {
+            Logger.getLogger(ServiceComptabilite.class.getName()).log(Level.SEVERE, null, ex);
+        }
+        finally{
+            Connexion.close();
+        }
+    }
     
     
     
     
 }
+
