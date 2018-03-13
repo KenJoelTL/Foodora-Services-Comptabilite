@@ -7,13 +7,11 @@ package com.foodora.comptabilite.modele.DAO;
 
 import com.foodora.comptabilite.modele.ItemTransaction;
 import com.foodora.comptabilite.modele.Transaction;
-import com.util.Util;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.logging.Level;
@@ -100,7 +98,7 @@ public class TransactionDAO extends DAO<Transaction> {
                 //Recherche les items de la transaction courrante
                 ItemTransactionDAO itDao = new ItemTransactionDAO();
                 itDao.setCnx(cnx);
-                t.setItemsCommande(itDao.findByIdTransaction(t.getId()));
+                t.setItemsCommande((ArrayList<ItemTransaction>) itDao.findByIdTransaction(t.getId()));
                 
                 resultat.close();
                 paramStm.close();
@@ -230,7 +228,7 @@ public class TransactionDAO extends DAO<Transaction> {
                 //Recherche les items de la transaction courrante
                 ItemTransactionDAO itDao = new ItemTransactionDAO();
                 itDao.setCnx(cnx);
-                t.setItemsCommande(itDao.findByIdTransaction(t.getId()));
+                t.setItemsCommande((ArrayList<ItemTransaction>) itDao.findByIdTransaction(t.getId()));
                 
                 listeTransaction.add(t);
             }
