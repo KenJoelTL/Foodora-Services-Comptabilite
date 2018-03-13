@@ -113,7 +113,6 @@ public class ServiceComptabilite extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        System.out.println("DO POOOOOOST");
               this.createTransaction(request, response);
     }
     
@@ -270,17 +269,23 @@ public class ServiceComptabilite extends HttpServlet {
 
     private void createTransaction(HttpServletRequest request, HttpServletResponse response) {
        try {
+           System.out.println("CREATE TRANSACTION");
             if (request.getParameter("transaction") !=null) { 
                 Class.forName(Config.DRIVER);
                 Connection cnx = Connexion.getInstance();
                 TransactionDAO tDao = new TransactionDAO();
-                tDao.setCnx(cnx);
+                System.out.println("test3");                tDao.setCnx(cnx);
                 Transaction t = new Transaction();
                 Gson gson = new Gson();
                 t = gson.fromJson(request.getParameter("transaction"), t.getClass());
-              
-               
+              /* t.setIdClient(1);
+               t.setIdSuccursale(1);
+               t.setItems_commande("itemscommande");
+               t.setPourboireCoursier(3);
+               t.setSousTotal(23);*/
+
                 if(tDao.create(t)){
+         
                     System.out.println("SUCCES !");
                     gson.toJson(t, response.getWriter());
                 }
